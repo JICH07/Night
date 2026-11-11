@@ -1,0 +1,208 @@
+{% extends "base_login.html" %}
+{% block titulo %}Crear cuenta — Mi Escuela{% endblock %}
+
+{% block estilos %}
+<style>
+    .auth-icon.register-shield {
+        position: relative;
+        overflow: visible;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        isolation: isolate;
+    }
+
+    .register-shield::before,
+    .register-shield::after {
+        position: absolute;
+        content: "";
+        border: 1px solid var(--hud-blue);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .register-shield::before {
+        inset: 3px;
+        opacity: 0;
+        box-shadow: 0 0 10px var(--hud-blue-glow), inset 0 0 8px var(--hud-blue-glow);
+        animation: shield-ring-form 1.8s 0.15s ease-out forwards;
+    }
+
+    .register-shield::after {
+        inset: -4px;
+        border-color: rgba(0, 240, 255, 0.55);
+        opacity: 0;
+        animation: shield-pulse-form 1.4s 0.65s ease-out both;
+    }
+
+    .register-shield svg {
+        position: relative;
+        z-index: 1;
+        width: 25px;
+        height: 29px;
+        fill: rgba(0, 240, 255, 0.12);
+        stroke: var(--hud-blue);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 1.6;
+        filter: drop-shadow(0 0 3px var(--hud-blue-glow));
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        animation: shield-rebuild-form 1.2s 0.25s ease-out forwards;
+    }
+
+    .register-shield-copy {
+        min-width: 0;
+    }
+
+    .register-status {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin: 0.35rem 0 0;
+        color: var(--hud-blue);
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .register-status::before {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--hud-blue);
+        box-shadow: 0 0 8px var(--hud-blue);
+        content: "";
+        animation: shield-indicator-form 1s ease-in-out infinite alternate;
+    }
+
+    .register-form .auth-submit {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .register-form .auth-submit::before {
+        position: absolute;
+        inset: 0 auto 0 -45%;
+        width: 35%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+        content: "";
+        transform: skewX(-20deg);
+    }
+
+    .register-form .auth-submit:hover::before,
+    .register-form.is-activating .auth-submit::before {
+        animation: shield-charge-form 0.8s ease-out;
+    }
+
+    .register-form.is-activating .auth-submit {
+        background: var(--hud-blue);
+        color: #000;
+        box-shadow: 0 0 18px var(--hud-blue);
+    }
+
+    @keyframes shield-ring-form {
+        0% { opacity: 0; transform: scale(0.35) rotate(-35deg); }
+        55% { opacity: 1; transform: scale(1.12) rotate(12deg); }
+        100% { opacity: 0.8; transform: scale(1) rotate(0); }
+    }
+
+    @keyframes shield-pulse-form {
+        0% { opacity: 0.85; transform: scale(0.65); }
+        100% { opacity: 0; transform: scale(1.5); }
+    }
+
+    @keyframes shield-rebuild-form {
+        0% { opacity: 0.2; stroke-dashoffset: 100; transform: scale(0.65); }
+        65% { opacity: 1; }
+        100% { opacity: 1; stroke-dashoffset: 0; transform: scale(1); }
+    }
+
+    @keyframes shield-indicator-form {
+        from { opacity: 0.45; }
+        to { opacity: 1; }
+    }
+
+    @keyframes shield-charge-form {
+        to { transform: translateX(420%) skewX(-20deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .register-shield::before,
+        .register-shield::after,
+        .register-shield svg,
+        .register-status::before {
+            animation: none;
+            opacity: 1;
+            stroke-dashoffset: 0;
+            transform: none;
+        }
+
+        .register-form .auth-submit::before {
+            animation: none !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+{% include "registration/partials/entrada.html" with orientation="vertical" %}
+
+<div class="auth-card-header">
+    <span class="auth-icon register-shield" aria-hidden="true">
+        <svg viewBox="0 0 24 28" fill="none">
+            <path d="M12 2.5 21 6v6.2c0 6-3.8 10.4-9 13.3-5.2-2.9-9-7.3-9-13.3V6l9-3.5Z"/>
+            <path d="m8.2 13.5 2.5 2.5 5.2-5.4"/>
+        </svg>
+    </span>
+    <div class="register-shield-copy">
+        <h1 class="auth-card-title">Crear cuenta</h1>
+        <p class="auth-card-subtitle">Completa los datos para registrarte</p>
+        <p class="register-status" aria-live="polite">Escudo listo</p>
+    </div>
+</div>
+
+<div class="auth-card-body">
+    {% if form.non_field_errors %}
+        <div class="auth-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <div>{{ form.non_field_errors.0 }}</div>
+        </div>
+    {% endif %}
+
+    <form method="post" class="auth-form register-form">
+        {% csrf_token %}
+        {% for campo in form %}
+            <p>
+                <label for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+                {{ campo }}
+                {% if campo.help_text %}<div class="auth-help">{{ campo.help_text }}</div>{% endif %}
+                {% if campo.errors %}
+                    <ul class="auth-errors">
+                        {% for error in campo.errors %}<li>{{ error }}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+            </p>
+        {% endfor %}
+        <button type="submit" class="auth-submit">
+            <i class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+            <span>Crear cuenta</span>
+        </button>
+    </form>
+
+    <p class="auth-footer">¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión</a></p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const registrationForm = document.querySelector('.register-form');
+
+    registrationForm.addEventListener('submit', () => {
+        registrationForm.classList.add('is-activating');
+        registrationForm.querySelector('.auth-submit span').textContent = 'Sincronizando escudo...';
+        document.querySelector('.register-status').textContent = 'Escudo activo · registro en curso';
+    });
+</script>
+{% endblock %}

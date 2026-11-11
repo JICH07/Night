@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block estilos %}
+<style>
+    .hud-card {
+        background: var(--hud-card-bg);
+        border: 1px solid var(--hud-border);
+        border-left: 4px solid var(--hud-blue);
+        padding: 30px;
+        position: relative;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.05);
+        backdrop-filter: blur(5px);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .hud-divider {
+        height: 1px;
+        background: linear-gradient(90deg, var(--hud-blue), transparent);
+        margin: 20px 0;
+    }
+
+    .detalle-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 15px;
+    }
+
+    .detalle-item {
+        background: rgba(15, 30, 55, 0.5);
+        border: 1px solid var(--hud-border);
+        padding: 15px;
+    }
+
+    .detalle-label {
+        font-size: 0.75rem;
+        color: var(--hud-gold);
+        text-transform: uppercase;
+        font-family: var(--font-heading);
+        letter-spacing: 1px;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .detalle-valor {
+        font-size: 1.05rem;
+        color: #ffffff;
+    }
+
+    .btn-hud {
+        background: rgba(0, 240, 255, 0.1);
+        border: 1px solid var(--hud-blue);
+        color: var(--hud-blue);
+        font-family: var(--font-heading);
+        font-size: 0.8rem;
+        padding: 10px 20px;
+        cursor: pointer;
+        text-transform: uppercase;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 20px;
+        transition: all 0.2s ease;
+        clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    }
+
+    .btn-hud:hover {
+        background: var(--hud-blue);
+        color: #000;
+        box-shadow: 0 0 15px var(--hud-blue);
+        font-weight: bold;
+    }
+</style>
+{% endblock estilos %}
+
+{% block contenido %}
+<div class="scanlines"></div>
+
+<div class="hud-card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+        <h2 style="font-family: var(--font-heading); color: var(--hud-blue); font-size: 1.3rem; margin:0;">
+            {{ alumno.nombre }} {{ alumno.apellido_paterno }} {{ alumno.apellido_materno }}
+        </h2>
+        <span style="color: var(--hud-gold); font-family: var(--font-mono);">ID: {{ alumno.matricula }}</span>
+    </div>
+
+    <div class="hud-divider"></div>
+
+    <div class="detalle-grid">
+        <div class="detalle-item">
+            <span class="detalle-label">Matrícula</span>
+            <span class="detalle-valor">{{ alumno.matricula }}</span>
+        </div>
+        <div class="detalle-item">
+            <span class="detalle-label">Edad</span>
+            <span class="detalle-valor">{{ alumno.edad }} años</span>
+        </div>
+        <div class="detalle-item">
+            <span class="detalle-label">Carrera</span>
+            <span class="detalle-valor" style="color: var(--hud-blue);">{{ alumno.carrera }}</span>
+        </div>
+        <div class="detalle-item">
+            <span class="detalle-label">Fecha de Registro</span>
+            <span class="detalle-valor" style="font-size: 0.85rem; color: #88a0c0;">{{ alumno.fecha_registro }}</span>
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <a href="{% url 'lista_alumnos' %}" class="btn-hud">Volver al Listado</a>
+        <a href="{% url 'editar_alumno' alumno.id %}" class="btn-hud" style="border-color: var(--hud-gold); color: var(--hud-gold);">Editar Alumno</a>
+    </div>
+</div>
+
+{% endblock contenido %}

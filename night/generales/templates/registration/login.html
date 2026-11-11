@@ -1,0 +1,44 @@
+{% extends "base_login.html" %}
+{% block titulo %}Iniciar sesión — Mi Escuela{% endblock %}
+
+{% block contenido %}
+{% include "registration/partials/entrada.html" with orientation="horizontal" %}
+
+<div class="auth-card-header">
+    <span class="auth-icon"><i class="bi bi-lock-fill"></i></span>
+    <div>
+        <h1 class="auth-card-title">Bienvenido</h1>
+        <p class="auth-card-subtitle">Inicia sesión para continuar</p>
+    </div>
+</div>
+
+<div class="auth-card-body">
+    {% if form.non_field_errors %}
+        <div class="auth-error">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <div>{{ form.non_field_errors.0 }}</div>
+        </div>
+    {% endif %}
+
+    <form method="post" class="auth-form">
+        {% csrf_token %}
+        {% for campo in form %}
+            <p>
+                <label for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+                {{ campo }}
+                {% if campo.errors %}
+                    <ul class="auth-errors">
+                        {% for error in campo.errors %}<li>{{ error }}</li>{% endfor %}
+                    </ul>
+                {% endif %}
+            </p>
+        {% endfor %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <button type="submit" class="auth-submit">
+            <i class="bi bi-box-arrow-in-right"></i> Entrar al sistema
+        </button>
+    </form>
+
+    <p class="auth-footer">¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate aquí</a></p>
+</div>
+{% endblock %}

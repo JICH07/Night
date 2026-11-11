@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block estilos %}
+<style>
+    /* Estilos personalizados para los botones de acción HUD en la tabla */
+    .btn-action {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 3px;
+        transition: all 0.2s;
+    }
+    .btn-info-hud {
+        background: rgba(0, 240, 255, 0.15);
+        border: 1px solid var(--hud-blue);
+        color: var(--hud-blue);
+    }
+    .btn-info-hud:hover {
+        background: var(--hud-blue);
+        color: #000;
+        box-shadow: 0 0 10px var(--hud-blue);
+    }
+    .btn-warn-hud {
+        background: rgba(255, 183, 0, 0.15);
+        border: 1px solid var(--hud-gold);
+        color: var(--hud-gold);
+    }
+    .btn-warn-hud:hover {
+        background: var(--hud-gold);
+        color: #000;
+        box-shadow: 0 0 10px var(--hud-gold);
+    }
+    .btn-danger-hud {
+        background: rgba(255, 51, 51, 0.15);
+        border: 1px solid var(--hud-alert);
+        color: var(--hud-alert);
+    }
+    .btn-danger-hud:hover {
+        background: var(--hud-alert);
+        color: #fff;
+        box-shadow: 0 0 10px var(--hud-alert);
+    }
+</style>
+{% endblock estilos %}
+
+{% block contenido %}
+
+    <div class="scanlines"></div>
+
+    <div class="hud-container">
+
+        <!-- CABECERA CON TÍTULO Y BOTÓN DE CREAR POR FUERA -->
+        <header class="hud-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div>
+                <h1 style="margin: 0;">Lista de Alumnos</h1>
+            </div>
+            
+            <!-- Botón Registrar Alumno por fuera de la tabla -->
+            <a href="{% url 'crear_alumno' %}" class="btn-action btn-info-hud" style="padding: 10px 18px; font-size: 0.85rem;">
+                + Registrar Alumno
+            </a>
+        </header>
+
+        <main>
+            <table class="hud-table">
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Nombre Completo</th>
+                        <th>Edad</th>
+                        <th>Carrera</th>
+                        <th>Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alumno in alumnos %}
+                    <tr>
+                        <td><span class="skill-code">{{ alumno.matricula }}</span></td>
+                        <td class="alumno-nombre">{{ alumno.nombre }} {{ alumno.apellido_paterno }} {{ alumno.apellido_materno }}</td>
+                        <td>{{ alumno.edad }} años</td>
+                        <td><span style="color: var(--hud-blue);">{{ alumno.carrera }}</span></td>
+                        <td style="font-size: 0.75rem; color: #88a0c0;">{{ alumno.fecha_registro }}</td>
+                        
+                        <!-- BOTONES DE ACCIÓN POR CADA REGISTRO -->
+                        <td style="display: flex; gap: 6px; align-items: center;">
+                            <a href="{% url 'detalle_alumno' alumno.id %}" class="btn-action btn-info-hud" title="Ver detalles">Ver</a>
+                            <a href="{% url 'editar_alumno' alumno.id %}" class="btn-action btn-warn-hud" title="Modificar datos">Editar</a>
+                            <a href="{% url 'eliminar_alumno' alumno.id %}" class="btn-action btn-danger-hud" title="Borrar registro">Borrar</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <p class="hud-alert">ALERTA: No se encontraron registros de alumnos.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+
+    </div>
+
+{% endblock contenido %}

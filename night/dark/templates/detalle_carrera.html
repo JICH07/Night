@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ carrera.carrera }} | Mi Escuela{% endblock titulo %}
+
+{% block estilos %}
+<style>
+    .hud-card {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        border: 1px solid var(--hud-border);
+        border-left: 4px solid var(--hud-blue);
+        background: var(--hud-card-bg);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.05);
+        backdrop-filter: blur(5px);
+    }
+
+    .hud-divider {
+        height: 1px;
+        margin: 20px 0;
+        background: linear-gradient(90deg, var(--hud-blue), transparent);
+    }
+
+    .detalle-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 15px;
+    }
+
+    .detalle-item {
+        padding: 15px;
+        border: 1px solid var(--hud-border);
+        background: rgba(15, 30, 55, 0.5);
+    }
+
+    .detalle-label {
+        display: block;
+        margin-bottom: 5px;
+        color: var(--hud-gold);
+        font-family: var(--font-heading);
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .detalle-valor {
+        color: #fff;
+        font-size: 1.05rem;
+    }
+
+    .detalle-lista {
+        margin: 0;
+        padding-left: 1.25rem;
+    }
+
+    .detalle-lista li {
+        margin-bottom: 0.4rem;
+    }
+
+    .btn-hud {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 10px 20px;
+        border: 1px solid var(--hud-blue);
+        background: rgba(0, 240, 255, 0.1);
+        color: var(--hud-blue);
+        font-family: var(--font-heading);
+        font-size: 0.8rem;
+        text-decoration: none;
+        text-transform: uppercase;
+        transition: all 0.2s ease;
+        clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    }
+
+    .btn-hud:hover {
+        background: var(--hud-blue);
+        color: #000;
+        box-shadow: 0 0 15px var(--hud-blue);
+    }
+</style>
+{% endblock estilos %}
+
+{% block contenido %}
+<div class="scanlines"></div>
+<section class="hud-card">
+    <header style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <h1 style="font-family: var(--font-heading); color: var(--hud-blue); font-size: 1.3rem; margin: 0;">
+            {{ carrera.carrera }}
+        </h1>
+        <span style="color: var(--hud-gold); font-family: var(--font-mono);">CLAVE: {{ carrera.clave }}</span>
+    </header>
+
+    <div class="hud-divider"></div>
+
+    <div class="detalle-grid">
+        <div class="detalle-item">
+            <span class="detalle-label">Clave</span>
+            <span class="detalle-valor">{{ carrera.clave }}</span>
+        </div>
+        <div class="detalle-item">
+            <span class="detalle-label">Nombre de la carrera</span>
+            <span class="detalle-valor">{{ carrera.carrera }}</span>
+        </div>
+        <div class="detalle-item">
+            <span class="detalle-label">Alumnos registrados</span>
+            <span class="detalle-valor">{{ carrera.alumno_set.count }}</span>
+        </div>
+        <div class="detalle-item">
+            <span class="detalle-label">Materias asignadas</span>
+            <span class="detalle-valor">{{ carrera.materia_set.count }}</span>
+        </div>
+        <div class="detalle-item">
+            <span class="detalle-label">Alumnos</span>
+            {% with alumnos=carrera.alumno_set.all %}
+                {% if alumnos %}
+                <ul class="detalle-lista">
+                    {% for alumno in alumnos %}
+                    <li>{{ alumno.matricula }} - {{ alumno.nombre }} {{ alumno.apellido_paterno }} {{ alumno.apellido_materno }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <span class="detalle-valor">Sin alumnos registrados</span>
+                {% endif %}
+            {% endwith %}
+        </div>
+        <div class="detalle-item">
+            <span class="detalle-label">Materias</span>
+            {% with materias=carrera.materia_set.all %}
+                {% if materias %}
+                <ul class="detalle-lista">
+                    {% for materia in materias %}
+                    <li>{{ materia.clave }} - {{ materia.nombre }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <span class="detalle-valor">Sin materias asignadas</span>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a href="{% url 'lista_carreras' %}" class="btn-hud">Volver al Listado</a>
+        <a href="{% url 'editar_carrera' carrera.pk %}" class="btn-hud" style="border-color: var(--hud-gold); color: var(--hud-gold);">Editar Carrera</a>
+    </div>
+</section>
+{% endblock contenido %}

@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ accion }} {{ tipo }} | Mi Escuela{% endblock titulo %}
+
+{% block estilos %}
+<style>
+    .page-header {
+        display: flex; align-items: center; gap: 1rem;
+        margin-bottom: 1.75rem;
+    }
+    .btn-back {
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        color: var(--hud-blue); text-decoration: none; font-size: 0.875rem;
+        font-weight: 500; padding: 0.45rem 0.9rem;
+        border: 1px solid var(--hud-blue); border-radius: 4px;
+        background: rgba(0, 240, 255, 0.1); transition: all 0.15s;
+        font-family: var(--font-heading); text-transform: uppercase;
+    }
+    .btn-back:hover { 
+        background: var(--hud-blue); color: #000; 
+        box-shadow: 0 0 10px var(--hud-blue); 
+    }
+
+    .form-card {
+        background: var(--hud-card-bg); border: 1px solid var(--hud-border);
+        border-left: 4px solid var(--hud-blue); border-radius: 0px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.05);
+        backdrop-filter: blur(5px); max-width: 680px; overflow: hidden;
+        margin: 0 auto;
+    }
+    .form-card-header {
+        padding: 1.5rem 2rem; border-bottom: 1px solid var(--hud-border);
+        display: flex; align-items: center; gap: 0.85rem;
+        background: rgba(15, 30, 55, 0.9);
+    }
+    .form-card-icon {
+        width: 44px; height: 44px; border-radius: 4px;
+        background: rgba(0, 240, 255, 0.1); border: 1px solid var(--hud-blue);
+        color: var(--hud-blue); font-size: 1.2rem;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0; box-shadow: 0 0 8px var(--hud-blue-glow);
+    }
+    .form-card-title { 
+        font-size: 1.1rem; font-weight: 700; color: #ffffff; margin: 0; 
+        font-family: var(--font-heading); letter-spacing: 1px; 
+    }
+
+    .form-card-body { padding: 1.75rem 2rem; }
+    .form-card-footer {
+        padding: 1.25rem 2rem; border-top: 1px solid var(--hud-border);
+        display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem;
+        background: rgba(15, 30, 55, 0.5);
+    }
+    .btn-save {
+        display: inline-flex; align-items: center; gap: 0.45rem;
+        background: rgba(0, 240, 255, 0.15); color: var(--hud-blue); 
+        border: 1px solid var(--hud-blue); border-radius: 4px;
+        padding: 0.65rem 1.4rem; font-size: 0.9rem; font-weight: 600;
+        cursor: pointer; transition: all 0.2s; font-family: var(--font-heading);
+        text-transform: uppercase; text-decoration: none;
+    }
+    .btn-save:hover { 
+        background: var(--hud-blue); color: #000; 
+        box-shadow: 0 0 12px var(--hud-blue); 
+    }
+
+    .form-card-body p { margin-bottom: 1.25rem; }
+    .form-card-body p label {
+        display: block; font-size: 0.8rem; font-weight: 600;
+        color: var(--hud-gold); text-transform: uppercase;
+        letter-spacing: 1px; margin-bottom: 0.4rem;
+        font-family: var(--font-heading);
+    }
+    .form-card-body input,
+    .form-card-body select,
+    .form-card-body textarea {
+        border: 1px solid var(--hud-border) !important; border-radius: 4px !important;
+        padding: 0.65rem 0.9rem !important; font-size: 0.9rem !important; 
+        color: #ffffff !important; background: rgba(5, 11, 20, 0.9) !important; 
+        outline: none !important; width: 100% !important;
+        font-family: var(--font-mono) !important;
+    }
+    .form-card-body input:focus {
+        border-color: var(--hud-blue) !important;
+        box-shadow: 0 0 10px var(--hud-blue-glow) !important;
+    }
+</style>
+{% endblock estilos %}
+
+{% block contenido %}
+<div class="scanlines"></div>
+<div class="page-header catalog-form-page" style="max-width: 680px; margin: 0 auto 1.5rem auto;">
+    <a href="{% url lista_url %}" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Volver al catálogo
+    </a>
+</div>
+
+<div class="form-card catalog-form-page">
+    <div class="form-card-header">
+        <div class="form-card-icon">
+            {% if tipo == 'Carrera' %}
+            <i class="bi bi-building"></i>
+            {% else %}
+            <i class="bi bi-journal-bookmark-fill"></i>
+            {% endif %}
+        </div>
+        <div>
+            <p class="form-card-title">{{ accion }} {{ tipo }}</p>
+        </div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-card-body">
+            {{ formulario.as_p }}
+        </div>
+        <div class="form-card-footer">
+            <a href="{% url lista_url %}" class="btn btn-outline-secondary btn-sm" style="font-family: var(--font-mono); color: #88a0c0; border-color: var(--hud-border);">
+                Cancelar
+            </a>
+            <button type="submit" class="btn-save">
+                <i class="bi bi-check-lg"></i> {{ accion }} {{ tipo }}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock contenido %}

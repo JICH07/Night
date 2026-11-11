@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block estilos %}
+<style>
+    .page-header {
+        display: flex; 
+        align-items: center; 
+        gap: 1rem;
+        margin-bottom: 1.75rem;
+    }
+    
+    .btn-back {
+        display: inline-flex; 
+        align-items: center; 
+        gap: 0.4rem;
+        color: var(--hud-blue); 
+        text-decoration: none; 
+        font-size: 0.875rem;
+        font-weight: 500; 
+        padding: 0.45rem 0.9rem;
+        border: 1px solid var(--hud-blue); 
+        border-radius: 4px;
+        background: rgba(0, 240, 255, 0.1); 
+        transition: all 0.15s;
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+    }
+    .btn-back:hover { 
+        background: var(--hud-blue); 
+        color: #000; 
+        box-shadow: 0 0 10px var(--hud-blue);
+    }
+
+    .form-card {
+        background: var(--hud-card-bg); 
+        border: 1px solid var(--hud-border);
+        border-left: 4px solid var(--hud-blue);
+        border-radius: 0px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(0, 240, 255, 0.05);
+        backdrop-filter: blur(5px);
+        max-width: 680px; 
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    .form-card-header {
+        padding: 1.5rem 2rem; 
+        border-bottom: 1px solid var(--hud-border);
+        display: flex; 
+        align-items: center; 
+        gap: 0.85rem;
+        background: rgba(15, 30, 55, 0.9);
+    }
+
+    .form-card-icon {
+        width: 44px; height: 44px; border-radius: 4px;
+        background: rgba(0, 240, 255, 0.1);
+        border: 1px solid var(--hud-blue);
+        color: var(--hud-blue); font-size: 1.2rem;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+        box-shadow: 0 0 8px var(--hud-blue-glow);
+    }
+
+    .form-card-title { 
+        font-size: 1.1rem; 
+        font-weight: 700; 
+        color: #ffffff; 
+        margin: 0; 
+        font-family: var(--font-heading);
+        letter-spacing: 1px;
+    }
+    .form-card-subtitle { 
+        font-size: 0.82rem; 
+        color: #88a0c0; 
+        margin: 0.1rem 0 0; 
+        font-family: var(--font-mono);
+    }
+
+    .form-card-body { padding: 1.75rem 2rem; }
+
+    .form-card-footer {
+        padding: 1.25rem 2rem; 
+        border-top: 1px solid var(--hud-border);
+        display: flex; 
+        align-items: center; 
+        justify-content: flex-end; 
+        gap: 0.75rem;
+        background: rgba(15, 30, 55, 0.5);
+    }
+
+    .btn-save {
+        display: inline-flex; align-items: center; gap: 0.45rem;
+        background: rgba(0, 240, 255, 0.15);
+        color: var(--hud-blue); border: 1px solid var(--hud-blue); 
+        border-radius: 4px;
+        padding: 0.65rem 1.4rem; font-size: 0.9rem; font-weight: 600;
+        cursor: pointer; transition: all 0.2s;
+        font-family: var(--font-heading);
+        text-transform: uppercase;
+    }
+    .btn-save:hover { 
+        background: var(--hud-blue); 
+        color: #000; 
+        box-shadow: 0 0 12px var(--hud-blue);
+    }
+
+    /* Estilos adaptados para los widgets generados por Django form.as_p */
+    .form-card-body p { margin-bottom: 1.25rem; }
+    
+    .form-card-body p label {
+        display: block; 
+        font-size: 0.8rem; 
+        font-weight: 600;
+        color: var(--hud-gold); 
+        text-transform: uppercase;
+        letter-spacing: 1px; 
+        margin-bottom: 0.4rem;
+        font-family: var(--font-heading);
+    }
+
+    .form-card-body input,
+    .form-card-body select,
+    .form-card-body textarea {
+        border: 1px solid var(--hud-border) !important; 
+        border-radius: 4px !important;
+        padding: 0.65rem 0.9rem !important; 
+        font-size: 0.9rem !important; 
+        color: #ffffff !important;
+        background: rgba(5, 11, 20, 0.9) !important; 
+        outline: none !important; 
+        width: 100% !important;
+        transition: border-color 0.2s, box-shadow 0.2s !important;
+        font-family: var(--font-mono) !important;
+    }
+
+    .form-card-body input:focus,
+    .form-card-body select:focus,
+    .form-card-body textarea:focus {
+        border-color: var(--hud-blue) !important;
+        box-shadow: 0 0 10px var(--hud-blue-glow) !important;
+        background: rgba(10, 25, 47, 0.95) !important;
+    }
+</style>
+{% endblock estilos %}
+
+{% block contenido %}
+<div class="scanlines"></div>
+
+<div class="page-header">
+    <a href="{% url 'lista_alumnos' %}" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Volver al listado
+    </a>
+</div>
+
+<div class="form-card">
+    <div class="form-card-header">
+        <div class="form-card-icon">
+            <i class="bi bi-person-plus-fill"></i>
+        </div>
+        <div>
+            <p class="form-card-title">{{ accion }} Alumno</p>
+        </div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-card-body">
+            {{ formulario.as_p }}
+        </div>
+        <div class="form-card-footer">
+            <a href="{% url 'lista_alumnos' %}" class="btn btn-outline-secondary btn-sm" style="font-family: var(--font-mono);">
+                Cancelar
+            </a>
+            <button type="submit" class="btn-save">
+                <i class="bi bi-check-lg"></i> {{ accion }} Alumno
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock contenido %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block titulo %}Eliminar {{ tipo }} | Mi Escuela{% endblock titulo %}
+
+{% block estilos %}
+<style>
+    .catalog-confirm-card {
+        background: rgba(255, 51, 51, 0.08);
+        border: 1px solid var(--hud-alert);
+        border-left: 4px solid var(--hud-alert);
+        padding: 35px;
+        max-width: 600px;
+        margin: 50px auto;
+        box-shadow: 0 0 20px rgba(255, 51, 51, 0.2);
+        backdrop-filter: blur(5px);
+    }
+    .catalog-confirm-card h3 {
+        color: var(--hud-alert);
+        font-family: var(--font-heading);
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+    }
+    .catalog-confirm-message {
+        color: var(--text-primary);
+        font-family: var(--font-mono);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
+    .catalog-confirm-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 25px;
+    }
+    .catalog-confirm-delete {
+        background: var(--hud-alert);
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        font-family: var(--font-heading);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
+        transition: all 0.2s;
+    }
+    .catalog-confirm-delete:hover {
+        background: #ff1111;
+        box-shadow: 0 0 15px #ff1111;
+    }
+    .catalog-confirm-cancel {
+        background: rgba(0, 240, 255, 0.1);
+        border: 1px solid var(--hud-blue);
+        color: var(--hud-blue);
+        padding: 10px 20px;
+        font-family: var(--font-heading);
+        font-size: 0.8rem;
+        text-decoration: none;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.2s;
+    }
+    .catalog-confirm-cancel:hover {
+        background: var(--hud-blue);
+        color: #000;
+        box-shadow: 0 0 10px var(--hud-blue);
+    }
+    .hud-alert {
+        color: #ff8888;
+        background: rgba(255, 51, 51, 0.1);
+        border: 1px solid rgba(255, 51, 51, 0.3);
+        padding: 12px;
+        margin-bottom: 20px;
+        font-family: var(--font-mono);
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock estilos %}
+
+{% block contenido %}
+<div class="scanlines"></div>
+<div class="catalog-confirm-card">
+    <h3>ADVERTENCIA: BORRAR REGISTRO</h3>
+    {% if error %}
+    <p class="hud-alert" role="alert">{{ error }}</p>
+    {% endif %}
+    <p class="catalog-confirm-message">
+        ¿Deseas eliminar permanentemente <strong>{{ objeto }}</strong> de la base de datos?
+    </p>
+
+    {% if tipo == 'Carrera' and not error %}
+    <p class="catalog-confirm-message">
+        Esta carrera tiene {{ alumnos_count }} alumno(s) y {{ materias_count }} materia(s) asociadas.
+        No podrá eliminarse mientras tenga registros relacionados.
+    </p>
+    {% endif %}
+
+    <form method="post" class="catalog-confirm-actions">
+        {% csrf_token %}
+        <button type="submit" class="catalog-confirm-delete">Confirmar Borrado</button>
+        <a href="{% url lista_url %}" class="catalog-confirm-cancel">Cancelar</a>
+    </form>
+</div>
+{% endblock contenido %}

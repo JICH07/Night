@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block contenido %}
+<div class="scanlines"></div>
+
+<div style="background: rgba(255, 51, 51, 0.08); border: 1px solid var(--hud-alert); padding: 30px; max-width: 550px; margin: 40px auto; text-align: center;">
+    <h3 style="color: var(--hud-alert); font-family: var(--font-heading); margin-bottom: 15px;">
+        ADVERTENCIA: BORRAR REGISTRO
+    </h3>
+    <p style="margin-bottom: 25px; color: #d1f7ff; font-family: var(--font-mono);">
+        ¿Deseas eliminar permanentemente a <strong>{{ alumno.nombre }} {{ alumno.apellido_paterno }}</strong> de la base de datos?
+    </p>
+
+    <form method="POST" style="display: flex; justify-content: center; gap: 15px;">
+        {% csrf_token %}
+        <button type="submit" style="background: var(--hud-alert); border: none; color: white; padding: 10px 20px; font-family: var(--font-heading); cursor: pointer;">
+            Confirmar Borrado
+        </button>
+        <a href="{% url 'lista_alumnos' %}" style="background: rgba(0, 240, 255, 0.1); border: 1px solid var(--hud-blue); color: var(--hud-blue); padding: 10px 20px; font-family: var(--font-heading); text-decoration: none;">
+            Cancelar
+        </a>
+    </form>
+</div>
+{% endblock contenido %}
